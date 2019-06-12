@@ -1,7 +1,16 @@
 import React from "react";
+import Header from "./Header";
+import Game from "./Game";
 
-function App() {
-  return <main className="App">{/* content goes here */}</main>;
+class App extends React.Component {
+  render() {
+    return (
+      <main className="App">
+        <Header />
+        <Game />
+      </main>
+    );
+  }
 }
 
 export default App;
