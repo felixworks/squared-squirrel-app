@@ -62,5 +62,9 @@ section {
 }
 
 .player {
-  background-color: blue;
+  background-color: yellow;
+}
+
+.winning-tile {
+  background-color: darkblue;
 }
