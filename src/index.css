@@ -61,8 +61,14 @@ section {
   background-color: red;
 }
 
+.projectile {
+  background-color: orange;
+  border-radius: 50%;
+}
+
 .player {
   background-color: yellow;
+  border-radius: 50%;
 }
 
 .winning-tile {

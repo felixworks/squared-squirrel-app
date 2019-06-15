@@ -1,17 +1,122 @@
 import React from "react";
 import GameTile from "./GameTile";
 import Player from "./Player";
+import Projectile from "./Projectile";
+import { withRouter } from "react-router-dom";
 
 class Gameboard extends React.Component {
   state = {
     player: {
-      playerX: 9,
-      playerY: 9
+      x: 9,
+      y: 9
     },
+    enemy1: {
+      x: 1,
+      y: 3,
+      projectile: {
+        x: 1,
+        y: 3,
+        direction: "up"
+      }
+    },
+    enemy2: {
+      x: 4,
+      y: 5,
+      projectile: {
+        x: 4,
+        y: 5,
+        direction: "down"
+      }
+    },
+    enemy3: {
+      x: 8,
+      y: 1,
+      projectile: {
+        x: 8,
+        y: 1,
+        direction: "left"
+      }
+    }
+  };
 
-    enemy1: null,
-    enemy2: null,
-    enemy3: null
+  // updateProjectileMovement() is currently only called when up arrow is pressed
+  updateProjectileMovement = () => {
+    // first, generate array of enemies from state
+    const startingProjectilesPosition = Object.entries(this.state);
+    const enemyList = [];
+    startingProjectilesPosition.forEach(function(element) {
+      if (element[0].includes("enemy")) {
+        enemyList.push(element);
+      }
+    });
+    console.log(enemyList);
+    // helper function for next code block
+    const setProjectileState = (direction, enemyName) => {
+      console.log("direction", direction);
+      let desiredState = {};
+      switch (direction) {
+        case "up":
+          desiredState = {
+            ...this.state,
+            [enemyName]: {
+              ...this.state[enemyName],
+              projectile: {
+                ...this.state[enemyName].projectile,
+                y: this.state[enemyName].projectile.y - 1
+              }
+            }
+          };
+          break;
+        case "down":
+          desiredState = {
+            ...this.state,
+            [enemyName]: {
+              ...this.state[enemyName],
+              projectile: {
+                ...this.state[enemyName].projectile,
+                y: this.state[enemyName].projectile.y + 1
+              }
+            }
+          };
+          break;
+        case "right":
+          desiredState = {
+            ...this.state,
+            [enemyName]: {
+              ...this.state[enemyName],
+              projectile: {
+                ...this.state[enemyName].projectile,
+                x: this.state[enemyName].projectile.x + 1
+              }
+            }
+          };
+          break;
+        case "left":
+          desiredState = {
+            ...this.state,
+            [enemyName]: {
+              ...this.state[enemyName],
+              projectile: {
+                ...this.state[enemyName].projectile,
+                x: this.state[enemyName].projectile.x - 1
+              }
+            }
+          };
+          break;
+      }
+
+      console.log("desiredState", desiredState);
+      this.setState(desiredState);
+    };
+    // loop through the list of enemies, and update each one's position in state
+    enemyList.forEach(function(enemy) {
+      const enemyName = enemy[0];
+      const projectile = enemy[1].projectile;
+      if (typeof projectile.x === "number") {
+        console.log("projectile.direction", projectile.direction);
+        setProjectileState(projectile.direction, enemyName);
+      }
+    });
   };
 
   handleKeyDown = e => {
@@ -19,58 +124,77 @@ class Gameboard extends React.Component {
     const keyPressedDown = e.code;
     switch (keyPressedDown) {
       case "ArrowUp":
-        if (this.state.player.playerY === 0) {
+        if (this.state.player.y === 0) {
           return null;
         }
         this.setState({
           player: {
             ...this.state.player,
-            playerY: this.state.player.playerY - 1
+            y: this.state.player.y - 1
           }
         });
+        this.updateProjectileMovement();
     }
     switch (keyPressedDown) {
       case "ArrowDown":
-        if (this.state.player.playerY === 9) {
+        if (this.state.player.y === 9) {
           return null;
         }
         this.setState({
           player: {
             ...this.state.player,
-            playerY: this.state.player.playerY + 1
+            y: this.state.player.y + 1
           }
         });
+        this.updateProjectileMovement();
     }
 
     switch (keyPressedDown) {
       case "ArrowRight":
-        if (this.state.player.playerX === 9) {
+        if (this.state.player.x === 9) {
           return null;
         }
         this.setState({
           player: {
             ...this.state.player,
-            playerX: this.state.player.playerX + 1
+            x: this.state.player.x + 1
           }
         });
+        this.updateProjectileMovement();
     }
 
     switch (keyPressedDown) {
       case "ArrowLeft":
-        if (this.state.player.playerX === 0) {
+        if (this.state.player.x === 0) {
           return null;
         }
         this.setState({
           player: {
             ...this.state.player,
-            playerX: this.state.player.playerX - 1
+            x: this.state.player.x - 1
           }
         });
+        this.updateProjectileMovement();
+    }
+  };
+
+  winStateCondition = () => {
+    // todo: centralize winning coordinates (maybe set in state), and update generateGameTileArray() to use the same source of truth
+    // todo: consider integrating/extending this with enemy collision detection and death state
+    if (this.state.player.x === 0 && this.state.player.y === 0) {
+      this.props.history.push("/winstate");
     }
   };
 
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeyDown);
+    // checks for win state every 0.25 seconds
+    this.winChecker = setInterval(() => this.winStateCondition(), 250);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.winChecker);
+    window.removeEventListener("keydown", this.handleKeyDown);
   }
 
   // randomNumberGenerator = () => {
@@ -97,15 +221,20 @@ class Gameboard extends React.Component {
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 10; x++) {
         // checks to see whether the player location in state matches the current tile being generated
-        let hasPlayer =
-          x === this.state.player.playerX && y === this.state.player.playerY;
+        let hasPlayer = x === this.state.player.x && y === this.state.player.y;
 
-        // sets hasEnemy property on various tiles
-        const enemyCoordinates = [[1, 3], [4, 5], [7, 8]];
         let hasEnemy =
-          (x === enemyCoordinates[0][0] && y === enemyCoordinates[0][1]) ||
-          (x === enemyCoordinates[1][0] && y === enemyCoordinates[1][1]) ||
-          (x === enemyCoordinates[2][0] && y === enemyCoordinates[2][1]);
+          (x === this.state.enemy1.x && y === this.state.enemy1.y) ||
+          (x === this.state.enemy2.x && y === this.state.enemy2.y) ||
+          (x === this.state.enemy3.x && y === this.state.enemy3.y);
+
+        let hasProjectile =
+          (x === this.state.enemy1.projectile.x &&
+            y === this.state.enemy1.projectile.y) ||
+          (x === this.state.enemy2.projectile.x &&
+            y === this.state.enemy2.projectile.y) ||
+          (x === this.state.enemy3.projectile.x &&
+            y === this.state.enemy3.projectile.y);
 
         const winningTile = [0, 0];
         let hasWinningTile = x === winningTile[0] && y === winningTile[1];
@@ -119,6 +248,7 @@ class Gameboard extends React.Component {
             hasWinningTile={hasWinningTile}
           >
             {hasPlayer && <Player />}
+            {hasProjectile && <Projectile />}
           </GameTile>
         );
       }
@@ -135,4 +265,4 @@ class Gameboard extends React.Component {
   }
 }
 
-export default Gameboard;
+export default withRouter(Gameboard);

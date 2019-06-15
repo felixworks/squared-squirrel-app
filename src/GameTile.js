@@ -1,7 +1,6 @@
 import React from "react";
 
 function GameTile(props) {
-  // randomly select some tiles to have enemies
   let tileType = "grid-item ";
   if (props.hasEnemy) {
     tileType = tileType + "enemy-tile";
