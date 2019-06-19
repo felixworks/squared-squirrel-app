@@ -50,7 +50,7 @@ class Gameboard extends React.Component {
       }
     });
     console.log(enemyList);
-    // helper function for next code block
+    // helper function for next code block - handles projectile movement by making the appropriate changes in state
     const setProjectileState = (direction, enemyName) => {
       console.log("direction", direction);
       let desiredState = {};
@@ -193,8 +193,8 @@ class Gameboard extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.winChecker);
     window.removeEventListener("keydown", this.handleKeyDown);
+    clearInterval(this.winChecker);
   }
 
   // randomNumberGenerator = () => {
