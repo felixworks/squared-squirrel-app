@@ -1,65 +1,45 @@
 import React from "react";
-import firebase from "./Firebase";
-import "firebase/auth";
-import { tsImportEqualsDeclaration } from "@babel/types";
-
-let googleProvider = new firebase.auth.GoogleAuthProvider();
+import AuthApiService from "./services/auth-api-service";
 
 class Popup extends React.Component {
   state = {
-    email: "",
-    password: ""
-  };
-  googleAuthentication = () => {
-    firebase
-      .auth()
-      .signInWithPopup(googleProvider)
-      .then(function(result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        let token = result.credential.accessToken;
-        // The signed-in user info.
-        let user = result.user;
-        console.log("user", user);
-        // ...
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        let errorCode = error.code;
-        let errorMessage = error.message;
-        // The email of the user's account used.
-        let email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        let credential = error.credential;
-        // ...
-      });
-  };
-  handleEmailChange = event => {
-    this.setState({ email: event.target.value });
+    username: "",
+    error: null
   };
 
-  handlePasswordChange = event => {
-    this.setState({ password: event.target.value });
+  handleUsernameChange = event => {
+    this.setState({ username: event.target.value });
   };
-  // need to add Firebase function call for email/password combo when the Submit button is clicked
+
+  handleSubmit = event => {
+    event.preventDefault();
+    AuthApiService.postUser({ username: this.state.username })
+      .then(user => {
+        this.setState({
+          username: ""
+        });
+      })
+      .catch(res => {
+        this.setState({ error: res.error });
+      });
+  };
+
   render() {
+    const error = this.state.error;
     return (
       <div className="authentication-popup-background">
-        <form className="authentication-popup">
-          <legend>Register</legend>
+        <form className="authentication-popup" onSubmit={this.handleSubmit}>
+          <div role="alert">{error && <p className="red">{error}</p>}</div>
+          <legend>Register/Login</legend>
+          <label htmlFor="username-input">Username</label>
           <input
             type="text"
-            placeholder="Email"
-            value={this.state.email}
-            onChange={this.handleEmailChange}
+            placeholder="Username"
+            id="username-input"
+            value={this.state.username}
+            onChange={this.handleUsernameChange}
           />
-          <input
-            type="text"
-            placeholder="Password"
-            value={this.state.password}
-            onChange={this.handlePasswordChange}
-          />
-          <button>Submit - currently non-functional</button>
-          <button onClick={this.googleAuthentication}>Login with Google</button>
+          <button type="submit">Submit</button>
           <button onClick={this.props.closePopup}>Back</button>
         </form>
       </div>
