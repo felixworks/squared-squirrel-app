@@ -4,6 +4,8 @@ import Player from "./Player";
 import Projectile from "./Projectile";
 import { withRouter } from "react-router-dom";
 
+let winningCoordinates = [0, 0];
+
 class Gameboard extends React.Component {
   state = {
     player: {
@@ -13,28 +15,79 @@ class Gameboard extends React.Component {
     enemy1: {
       x: 1,
       y: 3,
-      projectile: {
-        x: 1,
-        y: 3,
-        direction: "up"
+      projectiles: {
+        a: {
+          x: 1,
+          y: 3,
+          direction: "up"
+        },
+        b: {
+          x: 1,
+          y: 3,
+          direction: "down"
+        },
+        c: {
+          x: 1,
+          y: 3,
+          direction: "right"
+        },
+        d: {
+          x: 1,
+          y: 3,
+          direction: "left"
+        }
       }
     },
     enemy2: {
       x: 4,
       y: 5,
-      projectile: {
-        x: 4,
-        y: 5,
-        direction: "down"
+      projectiles: {
+        a: {
+          x: 4,
+          y: 5,
+          direction: "up"
+        },
+        b: {
+          x: 4,
+          y: 5,
+          direction: "down"
+        },
+        c: {
+          x: 4,
+          y: 5,
+          direction: "right"
+        },
+        d: {
+          x: 4,
+          y: 5,
+          direction: "left"
+        }
       }
     },
     enemy3: {
       x: 8,
       y: 1,
-      projectile: {
-        x: 8,
-        y: 1,
-        direction: "left"
+      projectiles: {
+        a: {
+          x: 8,
+          y: 1,
+          direction: "up"
+        },
+        b: {
+          x: 8,
+          y: 1,
+          direction: "down"
+        },
+        c: {
+          x: 8,
+          y: 1,
+          direction: "right"
+        },
+        d: {
+          x: 8,
+          y: 1,
+          direction: "left"
+        }
       }
     }
   };
@@ -178,18 +231,19 @@ class Gameboard extends React.Component {
     }
   };
 
-  winStateCondition = () => {
-    // todo: centralize winning coordinates (maybe set in state), and update generateGameTileArray() to use the same source of truth
+  gameStateCondition = () => {
     // todo: consider integrating/extending this with enemy collision detection and death state
     if (this.state.player.x === 0 && this.state.player.y === 0) {
       this.props.history.push("/winstate");
     }
+
+    // if (this.state.player.x === this.state.[enemy].projectiles.a)
   };
 
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeyDown);
     // checks for win state every 0.25 seconds
-    this.winChecker = setInterval(() => this.winStateCondition(), 250);
+    this.winChecker = setInterval(() => this.gameStateCondition(), 250);
   }
 
   componentWillUnmount() {
@@ -215,6 +269,38 @@ class Gameboard extends React.Component {
   //   });
   // };
 
+  //checks whether a tile should render a Projectile
+  renderProjectiles = (x, y) => {
+    const getNestedObject = (nestedObj, pathArr) => {
+      return pathArr.reduce(
+        (obj, key) => (obj && obj[key] !== "undefined" ? obj[key] : undefined),
+        nestedObj
+      );
+    };
+    const projectiles = getNestedObject(this.state, ["enemy1", "projectiles"]);
+    console.log(projectiles);
+
+    // figure out how to return true if [x,y] match the values in projectiles
+
+    // let projectileListByEnemy = [];
+    // for (const property in this.state) {
+    //   if (property.includes("enemy")) {
+    //     projectileListByEnemy.push(this.state[property].projectiles);
+    //   }
+    // }
+    // console.log("projectileListByEnemy", projectileListByEnemy);
+
+    // projectileListByEnemy.forEach(enemy => {
+    //   let singleProjectileList = [];
+    //   singleProjectileList.push(enemy);
+    //   console.log(singleProjectileList);
+    //   singleProjectileList.forEach(projectile => {
+    //     // if (x === projectile[0])
+    //     console.log(projectile);
+    //   });
+    // });
+  };
+
   // if performance issues arise, refactor this loop
   generateGameTileArray = () => {
     let gameTileArray = [];
@@ -227,17 +313,18 @@ class Gameboard extends React.Component {
           (x === this.state.enemy1.x && y === this.state.enemy1.y) ||
           (x === this.state.enemy2.x && y === this.state.enemy2.y) ||
           (x === this.state.enemy3.x && y === this.state.enemy3.y);
-
+        this.renderProjectiles(x, y);
+        // let hasProjectile = renderProjectiles(x,y)
         let hasProjectile =
-          (x === this.state.enemy1.projectile.x &&
-            y === this.state.enemy1.projectile.y) ||
-          (x === this.state.enemy2.projectile.x &&
-            y === this.state.enemy2.projectile.y) ||
-          (x === this.state.enemy3.projectile.x &&
-            y === this.state.enemy3.projectile.y);
+          (x === this.state.enemy1.projectiles.a.x &&
+            y === this.state.enemy1.projectiles.a.y) ||
+          (x === this.state.enemy2.projectiles.a.x &&
+            y === this.state.enemy2.projectiles.a.y) ||
+          (x === this.state.enemy3.projectiles.a.x &&
+            y === this.state.enemy3.projectiles.a.y);
 
-        const winningTile = [0, 0];
-        let hasWinningTile = x === winningTile[0] && y === winningTile[1];
+        let hasWinningTile =
+          x === winningCoordinates[0] && y === winningCoordinates[1];
 
         gameTileArray.push(
           <GameTile
