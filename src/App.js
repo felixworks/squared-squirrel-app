@@ -3,6 +3,7 @@ import Header from "./Header";
 import Game from "./Game";
 import LandingPage from "./LandingPage";
 import WinStatePage from "./WinStatePage";
+import LossStatePage from "./LossStatePage";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
 
 class App extends React.Component {
@@ -14,7 +15,8 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route path="/game" component={Game} />
-            <Route path="/winstate" component={WinStatePage} />
+            <Route path="/winState" component={WinStatePage} />
+            <Route path="/lossState" component={LossStatePage} />
           </Switch>
         </BrowserRouter>
       </main>

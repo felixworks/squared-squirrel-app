@@ -8,6 +8,7 @@ let winningCoordinates = [0, 0];
 
 class Gameboard extends React.Component {
   state = {
+    isPlayerAlive: true,
     player: {
       x: 9,
       y: 9
@@ -96,18 +97,53 @@ class Gameboard extends React.Component {
     // first, generate array of enemies from state
     const startingProjectilesPosition = Object.entries(this.state);
     const enemyList = [];
-    startingProjectilesPosition.forEach(function(element) {
+    startingProjectilesPosition.forEach(element => {
       if (element[0].includes("enemy")) {
         enemyList.push(element);
       }
     });
-    console.log("enemyList", enemyList);
     // helper function for next code block - handles projectile movement by making the appropriate changes in state
     const setProjectileState = (projectileLetter, direction, enemyName) => {
-      console.log("direction", direction);
-      console.log("projectileLetter", projectileLetter);
-      console.log("enemyName", enemyName);
+      // console.log("direction", direction);
+      // console.log("projectileLetter", projectileLetter);
+      // console.log("enemyName", enemyName);
       let desiredState = {};
+      const flipDirection = direction => {
+        const directionStringFlipper = initialDirection => {
+          // console.log("initialDirection", initialDirection);
+          switch (initialDirection) {
+            case "up":
+              return "down";
+            case "down":
+              return "up";
+            case "right":
+              return "left";
+            case "left":
+              return "right";
+          }
+        };
+        const flippedState = {
+          ...this.state,
+          [enemyName]: {
+            ...this.state[enemyName],
+            projectiles: {
+              ...this.state[enemyName].projectiles,
+              [projectileLetter]: {
+                ...this.state[enemyName].projectiles[projectileLetter],
+                direction: directionStringFlipper(direction)
+              }
+            }
+          }
+        };
+        if (
+          this.state[enemyName].projectiles[projectileLetter].y === 0 ||
+          this.state[enemyName].projectiles[projectileLetter].y === 9 ||
+          this.state[enemyName].projectiles[projectileLetter].x === 0 ||
+          this.state[enemyName].projectiles[projectileLetter].x === 9
+        ) {
+          desiredState = flippedState;
+        }
+      };
       switch (direction) {
         case "up":
           desiredState = {
@@ -123,6 +159,7 @@ class Gameboard extends React.Component {
               }
             }
           };
+          flipDirection(direction);
           break;
         case "down":
           desiredState = {
@@ -138,6 +175,7 @@ class Gameboard extends React.Component {
               }
             }
           };
+          flipDirection(direction);
           break;
         case "right":
           desiredState = {
@@ -168,27 +206,22 @@ class Gameboard extends React.Component {
               }
             }
           };
+
           break;
       }
 
-      console.log("desiredState", desiredState);
+      // console.log("desiredState", desiredState);
       this.setState(desiredState);
     };
-    // loop through the list of enemies, and update each one's position in state
+    // loop through the list of enemies, and update each enemy's projectiles' positions in state
     enemyList.forEach(enemy => {
       const enemyName = enemy[0];
       const projectiles = enemy[1].projectiles;
-      // console.log("projectiles", projectiles);
       Object.keys(projectiles).forEach(projectile => {
         const projectileDirection = projectiles[projectile]["direction"];
         const projectileLetter = projectile;
-        // console.log("projectileLetter", projectileLetter);
         setProjectileState(projectileLetter, projectileDirection, enemyName);
       });
-      // if (typeof projectile.x === "number") {
-      //   console.log("projectile.direction", projectile.direction);
-      //   setProjectileState(projectile.direction, enemyName);
-      // }
     });
   };
 
@@ -252,12 +285,16 @@ class Gameboard extends React.Component {
   };
 
   gameStateCondition = () => {
-    // todo: consider integrating/extending this with enemy collision detection and death state
-    if (this.state.player.x === 0 && this.state.player.y === 0) {
-      this.props.history.push("/winstate");
+    if (
+      this.state.player.x === winningCoordinates[0] &&
+      this.state.player.y === winningCoordinates[1]
+    ) {
+      this.props.history.push("/winState");
     }
 
-    // if (this.state.player.x === this.state.[enemy].projectiles.a)
+    if (!this.state.isPlayerAlive) {
+      this.props.history.push("/lossState");
+    }
   };
 
   componentDidMount() {
@@ -367,24 +404,28 @@ class Gameboard extends React.Component {
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 10; x++) {
         // checks to see whether the player location in state matches the current tile being generated
-        let hasPlayer = x === this.state.player.x && y === this.state.player.y;
+        const hasPlayer =
+          x === this.state.player.x && y === this.state.player.y;
 
-        let hasEnemy =
+        const hasEnemy =
           (x === this.state.enemy1.x && y === this.state.enemy1.y) ||
           (x === this.state.enemy2.x && y === this.state.enemy2.y) ||
           (x === this.state.enemy3.x && y === this.state.enemy3.y);
 
-        let hasProjectile = this.renderProjectiles(x, y);
-        // let hasProjectile =
-        //   (x === this.state.enemy1.projectiles.a.x &&
-        //     y === this.state.enemy1.projectiles.a.y) ||
-        //   (x === this.state.enemy2.projectiles.a.x &&
-        //     y === this.state.enemy2.projectiles.a.y) ||
-        //   (x === this.state.enemy3.projectiles.a.x &&
-        //     y === this.state.enemy3.projectiles.a.y);
+        const hasProjectile = this.renderProjectiles(x, y);
 
-        let hasWinningTile =
+        const hasWinningTile =
           x === winningCoordinates[0] && y === winningCoordinates[1];
+
+        if ((hasPlayer && hasProjectile) || (hasPlayer && hasEnemy)) {
+          console.log("player has died");
+          this.setState({
+            ...this.state,
+            isPlayerAlive: false
+          });
+          // added this line to resolve an infinite loop caused by setting state in render()
+          this.gameStateCondition();
+        }
 
         gameTileArray.push(
           <GameTile
