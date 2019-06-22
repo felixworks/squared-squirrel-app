@@ -104,13 +104,19 @@ class Gameboard extends React.Component {
     });
     // helper function for next code block - handles projectile movement by making the appropriate changes in state
     const setProjectileState = (projectileLetter, direction, enemyName) => {
-      // console.log("direction", direction);
-      // console.log("projectileLetter", projectileLetter);
-      // console.log("enemyName", enemyName);
       let desiredState = {};
-      const flipDirection = direction => {
-        const directionStringFlipper = initialDirection => {
-          // console.log("initialDirection", initialDirection);
+      const directionStringFlipper = initialDirection => {
+        //checks whether a projectile is at the edge of the board and needs to be flipped
+        if (
+          (this.state[enemyName].projectiles[projectileLetter].y === 0 &&
+            initialDirection === "up") ||
+          (this.state[enemyName].projectiles[projectileLetter].y === 9 &&
+            initialDirection === "down") ||
+          (this.state[enemyName].projectiles[projectileLetter].x === 0 &&
+            initialDirection === "left") ||
+          (this.state[enemyName].projectiles[projectileLetter].x === 9 &&
+            initialDirection === "right")
+        ) {
           switch (initialDirection) {
             case "up":
               return "down";
@@ -121,29 +127,19 @@ class Gameboard extends React.Component {
             case "left":
               return "right";
           }
-        };
-        const flippedState = {
-          ...this.state,
-          [enemyName]: {
-            ...this.state[enemyName],
-            projectiles: {
-              ...this.state[enemyName].projectiles,
-              [projectileLetter]: {
-                ...this.state[enemyName].projectiles[projectileLetter],
-                direction: directionStringFlipper(direction)
-              }
-            }
-          }
-        };
-        if (
-          this.state[enemyName].projectiles[projectileLetter].y === 0 ||
-          this.state[enemyName].projectiles[projectileLetter].y === 9 ||
-          this.state[enemyName].projectiles[projectileLetter].x === 0 ||
-          this.state[enemyName].projectiles[projectileLetter].x === 9
-        ) {
-          desiredState = flippedState;
+        } else {
+          return initialDirection;
         }
       };
+
+      const flippedDirection = directionStringFlipper(direction);
+      console.log(
+        "flippedDirection",
+        flippedDirection,
+        enemyName,
+        projectileLetter
+      );
+
       switch (direction) {
         case "up":
           desiredState = {
@@ -154,12 +150,13 @@ class Gameboard extends React.Component {
                 ...this.state[enemyName].projectiles,
                 [projectileLetter]: {
                   ...this.state[enemyName].projectiles[projectileLetter],
-                  y: this.state[enemyName].projectiles[projectileLetter].y - 1
+                  y: this.state[enemyName].projectiles[projectileLetter].y - 1,
+                  direction: flippedDirection
                 }
               }
             }
           };
-          flipDirection(direction);
+
           break;
         case "down":
           desiredState = {
@@ -170,12 +167,13 @@ class Gameboard extends React.Component {
                 ...this.state[enemyName].projectiles,
                 [projectileLetter]: {
                   ...this.state[enemyName].projectiles[projectileLetter],
-                  y: this.state[enemyName].projectiles[projectileLetter].y + 1
+                  y: this.state[enemyName].projectiles[projectileLetter].y + 1,
+                  direction: flippedDirection
                 }
               }
             }
           };
-          flipDirection(direction);
+
           break;
         case "right":
           desiredState = {
@@ -186,11 +184,13 @@ class Gameboard extends React.Component {
                 ...this.state[enemyName].projectiles,
                 [projectileLetter]: {
                   ...this.state[enemyName].projectiles[projectileLetter],
-                  x: this.state[enemyName].projectiles[projectileLetter].x + 1
+                  x: this.state[enemyName].projectiles[projectileLetter].x + 1,
+                  direction: flippedDirection
                 }
               }
             }
           };
+
           break;
         case "left":
           desiredState = {
@@ -201,7 +201,8 @@ class Gameboard extends React.Component {
                 ...this.state[enemyName].projectiles,
                 [projectileLetter]: {
                   ...this.state[enemyName].projectiles[projectileLetter],
-                  x: this.state[enemyName].projectiles[projectileLetter].x - 1
+                  x: this.state[enemyName].projectiles[projectileLetter].x - 1,
+                  direction: flippedDirection
                 }
               }
             }
