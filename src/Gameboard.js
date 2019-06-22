@@ -93,6 +93,113 @@ class Gameboard extends React.Component {
     }
   };
 
+  //checks whether a projectile is at the edge of the board and needs to be flipped
+  directionFlipper = (initialDirection, enemyName, projectileLetter) => {
+    if (
+      (this.state[enemyName].projectiles[projectileLetter].y === 0 &&
+        initialDirection === "up") ||
+      (this.state[enemyName].projectiles[projectileLetter].y === 9 &&
+        initialDirection === "down") ||
+      (this.state[enemyName].projectiles[projectileLetter].x === 0 &&
+        initialDirection === "left") ||
+      (this.state[enemyName].projectiles[projectileLetter].x === 9 &&
+        initialDirection === "right")
+    ) {
+      switch (initialDirection) {
+        case "up":
+          return "down";
+        case "down":
+          return "up";
+        case "right":
+          return "left";
+        case "left":
+          return "right";
+      }
+    } else {
+      return initialDirection;
+    }
+  };
+
+  // helper function for next code block - handles projectile movement by making the appropriate changes in state
+  setProjectileState = (projectileLetter, direction, enemyName) => {
+    let desiredState = {};
+    const flippedDirection = this.directionFlipper(
+      direction,
+      enemyName,
+      projectileLetter
+    );
+
+    switch (direction) {
+      case "up":
+        desiredState = {
+          ...this.state,
+          [enemyName]: {
+            ...this.state[enemyName],
+            projectiles: {
+              ...this.state[enemyName].projectiles,
+              [projectileLetter]: {
+                ...this.state[enemyName].projectiles[projectileLetter],
+                y: this.state[enemyName].projectiles[projectileLetter].y - 1,
+                direction: flippedDirection
+              }
+            }
+          }
+        };
+        break;
+      case "down":
+        desiredState = {
+          ...this.state,
+          [enemyName]: {
+            ...this.state[enemyName],
+            projectiles: {
+              ...this.state[enemyName].projectiles,
+              [projectileLetter]: {
+                ...this.state[enemyName].projectiles[projectileLetter],
+                y: this.state[enemyName].projectiles[projectileLetter].y + 1,
+                direction: flippedDirection
+              }
+            }
+          }
+        };
+        break;
+      case "right":
+        desiredState = {
+          ...this.state,
+          [enemyName]: {
+            ...this.state[enemyName],
+            projectiles: {
+              ...this.state[enemyName].projectiles,
+              [projectileLetter]: {
+                ...this.state[enemyName].projectiles[projectileLetter],
+                x: this.state[enemyName].projectiles[projectileLetter].x + 1,
+                direction: flippedDirection
+              }
+            }
+          }
+        };
+        break;
+      case "left":
+        desiredState = {
+          ...this.state,
+          [enemyName]: {
+            ...this.state[enemyName],
+            projectiles: {
+              ...this.state[enemyName].projectiles,
+              [projectileLetter]: {
+                ...this.state[enemyName].projectiles[projectileLetter],
+                x: this.state[enemyName].projectiles[projectileLetter].x - 1,
+                direction: flippedDirection
+              }
+            }
+          }
+        };
+        break;
+    }
+
+    // console.log("desiredState", desiredState);
+    this.setState(desiredState);
+  };
+
   updateProjectileMovement = () => {
     // first, generate array of enemies from state
     const startingProjectilesPosition = Object.entries(this.state);
@@ -102,126 +209,19 @@ class Gameboard extends React.Component {
         enemyList.push(element);
       }
     });
-    // helper function for next code block - handles projectile movement by making the appropriate changes in state
-    const setProjectileState = (projectileLetter, direction, enemyName) => {
-      let desiredState = {};
-      const directionStringFlipper = initialDirection => {
-        //checks whether a projectile is at the edge of the board and needs to be flipped
-        if (
-          (this.state[enemyName].projectiles[projectileLetter].y === 0 &&
-            initialDirection === "up") ||
-          (this.state[enemyName].projectiles[projectileLetter].y === 9 &&
-            initialDirection === "down") ||
-          (this.state[enemyName].projectiles[projectileLetter].x === 0 &&
-            initialDirection === "left") ||
-          (this.state[enemyName].projectiles[projectileLetter].x === 9 &&
-            initialDirection === "right")
-        ) {
-          switch (initialDirection) {
-            case "up":
-              return "down";
-            case "down":
-              return "up";
-            case "right":
-              return "left";
-            case "left":
-              return "right";
-          }
-        } else {
-          return initialDirection;
-        }
-      };
 
-      const flippedDirection = directionStringFlipper(direction);
-      console.log(
-        "flippedDirection",
-        flippedDirection,
-        enemyName,
-        projectileLetter
-      );
-
-      switch (direction) {
-        case "up":
-          desiredState = {
-            ...this.state,
-            [enemyName]: {
-              ...this.state[enemyName],
-              projectiles: {
-                ...this.state[enemyName].projectiles,
-                [projectileLetter]: {
-                  ...this.state[enemyName].projectiles[projectileLetter],
-                  y: this.state[enemyName].projectiles[projectileLetter].y - 1,
-                  direction: flippedDirection
-                }
-              }
-            }
-          };
-
-          break;
-        case "down":
-          desiredState = {
-            ...this.state,
-            [enemyName]: {
-              ...this.state[enemyName],
-              projectiles: {
-                ...this.state[enemyName].projectiles,
-                [projectileLetter]: {
-                  ...this.state[enemyName].projectiles[projectileLetter],
-                  y: this.state[enemyName].projectiles[projectileLetter].y + 1,
-                  direction: flippedDirection
-                }
-              }
-            }
-          };
-
-          break;
-        case "right":
-          desiredState = {
-            ...this.state,
-            [enemyName]: {
-              ...this.state[enemyName],
-              projectiles: {
-                ...this.state[enemyName].projectiles,
-                [projectileLetter]: {
-                  ...this.state[enemyName].projectiles[projectileLetter],
-                  x: this.state[enemyName].projectiles[projectileLetter].x + 1,
-                  direction: flippedDirection
-                }
-              }
-            }
-          };
-
-          break;
-        case "left":
-          desiredState = {
-            ...this.state,
-            [enemyName]: {
-              ...this.state[enemyName],
-              projectiles: {
-                ...this.state[enemyName].projectiles,
-                [projectileLetter]: {
-                  ...this.state[enemyName].projectiles[projectileLetter],
-                  x: this.state[enemyName].projectiles[projectileLetter].x - 1,
-                  direction: flippedDirection
-                }
-              }
-            }
-          };
-
-          break;
-      }
-
-      // console.log("desiredState", desiredState);
-      this.setState(desiredState);
-    };
-    // loop through the list of enemies, and update each enemy's projectiles' positions in state
+    // loop through the list of enemies, and update each enemy's projectiles' positions/directions in state
     enemyList.forEach(enemy => {
       const enemyName = enemy[0];
       const projectiles = enemy[1].projectiles;
       Object.keys(projectiles).forEach(projectile => {
         const projectileDirection = projectiles[projectile]["direction"];
         const projectileLetter = projectile;
-        setProjectileState(projectileLetter, projectileDirection, enemyName);
+        this.setProjectileState(
+          projectileLetter,
+          projectileDirection,
+          enemyName
+        );
       });
     });
   };
@@ -334,25 +334,14 @@ class Gameboard extends React.Component {
 
     const projectileListGrabber = object => {
       Object.keys(object).forEach(enemy => {
-        // console.log("enemy", enemy);
-        // console.log("object", object[enemy]);
         if (enemy.includes("enemy")) {
-          console.log("enemy", enemy);
-          console.log("Object.keys(object[enemy])", Object.keys(object[enemy]));
           Object.keys(object[enemy]).forEach(projectiles => {
             if (projectiles.includes("projectiles")) {
-              console.log("projectiles", object[enemy][projectiles]);
               Object.keys(object[enemy][projectiles]).forEach(projectile => {
-                console.log(
-                  "projectile",
-                  object[enemy][projectiles][projectile]
-                );
-                console.log("x", object[enemy][projectiles][projectile]["x"]);
                 if (
                   object[enemy][projectiles][projectile]["x"] === tileX &&
                   object[enemy][projectiles][projectile]["y"] === tileY
                 ) {
-                  console.log("match", tileX, tileY);
                   hasProjectile = true;
                 }
               });
@@ -368,21 +357,9 @@ class Gameboard extends React.Component {
     const projectileListGrabber2 = object => {
       for (const enemy in object) {
         if (enemy.includes("enemy")) {
-          // console.log(enemy);
           for (const projectiles in object[enemy]) {
-            // console.log(
-            //   "this.state[enemy].projectiles",
-            //   this.state[enemy].projectiles
-            // );
-            // console.log("projectiles", projectiles);
             for (const projectile in object[enemy][projectiles]) {
-              // console.log("projectile", projectile);
               for (const variable in object[enemy][projectiles][projectile]) {
-                // console.log("variable", variable);
-                // console.log(
-                //   `object[enemy][projectiles][projectile]["x"]`,
-                //   object[enemy][projectiles][projectile]["x"]
-                // );
                 if (
                   tileX === object[enemy][projectiles][projectile]["x"] &&
                   tileY === object[enemy][projectiles][projectile]["y"]
