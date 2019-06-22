@@ -92,7 +92,6 @@ class Gameboard extends React.Component {
     }
   };
 
-  // updateProjectileMovement() is currently only called when up arrow is pressed
   updateProjectileMovement = () => {
     // first, generate array of enemies from state
     const startingProjectilesPosition = Object.entries(this.state);
@@ -270,35 +269,75 @@ class Gameboard extends React.Component {
   // };
 
   //checks whether a tile should render a Projectile
-  renderProjectiles = (x, y) => {
-    const getNestedObject = (nestedObj, pathArr) => {
-      return pathArr.reduce(
-        (obj, key) => (obj && obj[key] !== "undefined" ? obj[key] : undefined),
-        nestedObj
-      );
+  renderProjectiles = (tileX, tileY) => {
+    let hasProjectile = false;
+    const initialList = this.state;
+
+    const projectileListGrabber = object => {
+      Object.keys(object).forEach(enemy => {
+        // console.log("enemy", enemy);
+        // console.log("object", object[enemy]);
+        if (enemy.includes("enemy")) {
+          console.log("enemy", enemy);
+          console.log("Object.keys(object[enemy])", Object.keys(object[enemy]));
+          Object.keys(object[enemy]).forEach(projectiles => {
+            if (projectiles.includes("projectiles")) {
+              console.log("projectiles", object[enemy][projectiles]);
+              Object.keys(object[enemy][projectiles]).forEach(projectile => {
+                console.log(
+                  "projectile",
+                  object[enemy][projectiles][projectile]
+                );
+                console.log("x", object[enemy][projectiles][projectile]["x"]);
+                if (
+                  object[enemy][projectiles][projectile]["x"] === tileX &&
+                  object[enemy][projectiles][projectile]["y"] === tileY
+                ) {
+                  console.log("match", tileX, tileY);
+                  hasProjectile = true;
+                }
+              });
+            }
+          });
+        }
+      });
     };
-    const projectiles = getNestedObject(this.state, ["enemy1", "projectiles"]);
-    console.log(projectiles);
 
-    // figure out how to return true if [x,y] match the values in projectiles
+    let hasProjectile2 = false;
+    const initialList2 = this.state;
 
-    // let projectileListByEnemy = [];
-    // for (const property in this.state) {
-    //   if (property.includes("enemy")) {
-    //     projectileListByEnemy.push(this.state[property].projectiles);
-    //   }
-    // }
-    // console.log("projectileListByEnemy", projectileListByEnemy);
-
-    // projectileListByEnemy.forEach(enemy => {
-    //   let singleProjectileList = [];
-    //   singleProjectileList.push(enemy);
-    //   console.log(singleProjectileList);
-    //   singleProjectileList.forEach(projectile => {
-    //     // if (x === projectile[0])
-    //     console.log(projectile);
-    //   });
-    // });
+    const projectileListGrabber2 = object => {
+      for (const enemy in object) {
+        if (enemy.includes("enemy")) {
+          console.log(enemy);
+          for (const projectiles in object[enemy]) {
+            // console.log(
+            //   "this.state[enemy].projectiles",
+            //   this.state[enemy].projectiles
+            // );
+            console.log("projectiles", projectiles);
+            for (const projectile in object[enemy][projectiles]) {
+              console.log("projectile", projectile);
+              for (const variable in object[enemy][projectiles][projectile]) {
+                console.log("variable", variable);
+                console.log(
+                  `object[enemy][projectiles][projectile]["x"]`,
+                  object[enemy][projectiles][projectile]["x"]
+                );
+                if (
+                  tileX === object[enemy][projectiles][projectile]["x"] &&
+                  tileY === object[enemy][projectiles][projectile]["y"]
+                ) {
+                  hasProjectile2 = true;
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    projectileListGrabber2(initialList2);
+    return hasProjectile2;
   };
 
   // if performance issues arise, refactor this loop
@@ -313,15 +352,15 @@ class Gameboard extends React.Component {
           (x === this.state.enemy1.x && y === this.state.enemy1.y) ||
           (x === this.state.enemy2.x && y === this.state.enemy2.y) ||
           (x === this.state.enemy3.x && y === this.state.enemy3.y);
-        this.renderProjectiles(x, y);
-        // let hasProjectile = renderProjectiles(x,y)
-        let hasProjectile =
-          (x === this.state.enemy1.projectiles.a.x &&
-            y === this.state.enemy1.projectiles.a.y) ||
-          (x === this.state.enemy2.projectiles.a.x &&
-            y === this.state.enemy2.projectiles.a.y) ||
-          (x === this.state.enemy3.projectiles.a.x &&
-            y === this.state.enemy3.projectiles.a.y);
+
+        let hasProjectile = this.renderProjectiles(x, y);
+        // let hasProjectile =
+        //   (x === this.state.enemy1.projectiles.a.x &&
+        //     y === this.state.enemy1.projectiles.a.y) ||
+        //   (x === this.state.enemy2.projectiles.a.x &&
+        //     y === this.state.enemy2.projectiles.a.y) ||
+        //   (x === this.state.enemy3.projectiles.a.x &&
+        //     y === this.state.enemy3.projectiles.a.y);
 
         let hasWinningTile =
           x === winningCoordinates[0] && y === winningCoordinates[1];
