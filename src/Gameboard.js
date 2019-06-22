@@ -101,10 +101,12 @@ class Gameboard extends React.Component {
         enemyList.push(element);
       }
     });
-    console.log(enemyList);
+    console.log("enemyList", enemyList);
     // helper function for next code block - handles projectile movement by making the appropriate changes in state
-    const setProjectileState = (direction, enemyName) => {
+    const setProjectileState = (projectileLetter, direction, enemyName) => {
       console.log("direction", direction);
+      console.log("projectileLetter", projectileLetter);
+      console.log("enemyName", enemyName);
       let desiredState = {};
       switch (direction) {
         case "up":
@@ -112,9 +114,12 @@ class Gameboard extends React.Component {
             ...this.state,
             [enemyName]: {
               ...this.state[enemyName],
-              projectile: {
-                ...this.state[enemyName].projectile,
-                y: this.state[enemyName].projectile.y - 1
+              projectiles: {
+                ...this.state[enemyName].projectiles,
+                [projectileLetter]: {
+                  ...this.state[enemyName].projectiles[projectileLetter],
+                  y: this.state[enemyName].projectiles[projectileLetter].y - 1
+                }
               }
             }
           };
@@ -124,9 +129,12 @@ class Gameboard extends React.Component {
             ...this.state,
             [enemyName]: {
               ...this.state[enemyName],
-              projectile: {
-                ...this.state[enemyName].projectile,
-                y: this.state[enemyName].projectile.y + 1
+              projectiles: {
+                ...this.state[enemyName].projectiles,
+                [projectileLetter]: {
+                  ...this.state[enemyName].projectiles[projectileLetter],
+                  y: this.state[enemyName].projectiles[projectileLetter].y + 1
+                }
               }
             }
           };
@@ -136,9 +144,12 @@ class Gameboard extends React.Component {
             ...this.state,
             [enemyName]: {
               ...this.state[enemyName],
-              projectile: {
-                ...this.state[enemyName].projectile,
-                x: this.state[enemyName].projectile.x + 1
+              projectiles: {
+                ...this.state[enemyName].projectiles,
+                [projectileLetter]: {
+                  ...this.state[enemyName].projectiles[projectileLetter],
+                  x: this.state[enemyName].projectiles[projectileLetter].x + 1
+                }
               }
             }
           };
@@ -148,9 +159,12 @@ class Gameboard extends React.Component {
             ...this.state,
             [enemyName]: {
               ...this.state[enemyName],
-              projectile: {
-                ...this.state[enemyName].projectile,
-                x: this.state[enemyName].projectile.x - 1
+              projectiles: {
+                ...this.state[enemyName].projectiles,
+                [projectileLetter]: {
+                  ...this.state[enemyName].projectiles[projectileLetter],
+                  x: this.state[enemyName].projectiles[projectileLetter].x - 1
+                }
               }
             }
           };
@@ -161,13 +175,20 @@ class Gameboard extends React.Component {
       this.setState(desiredState);
     };
     // loop through the list of enemies, and update each one's position in state
-    enemyList.forEach(function(enemy) {
+    enemyList.forEach(enemy => {
       const enemyName = enemy[0];
-      const projectile = enemy[1].projectile;
-      if (typeof projectile.x === "number") {
-        console.log("projectile.direction", projectile.direction);
-        setProjectileState(projectile.direction, enemyName);
-      }
+      const projectiles = enemy[1].projectiles;
+      // console.log("projectiles", projectiles);
+      Object.keys(projectiles).forEach(projectile => {
+        const projectileDirection = projectiles[projectile]["direction"];
+        const projectileLetter = projectile;
+        // console.log("projectileLetter", projectileLetter);
+        setProjectileState(projectileLetter, projectileDirection, enemyName);
+      });
+      // if (typeof projectile.x === "number") {
+      //   console.log("projectile.direction", projectile.direction);
+      //   setProjectileState(projectile.direction, enemyName);
+      // }
     });
   };
 
@@ -309,21 +330,21 @@ class Gameboard extends React.Component {
     const projectileListGrabber2 = object => {
       for (const enemy in object) {
         if (enemy.includes("enemy")) {
-          console.log(enemy);
+          // console.log(enemy);
           for (const projectiles in object[enemy]) {
             // console.log(
             //   "this.state[enemy].projectiles",
             //   this.state[enemy].projectiles
             // );
-            console.log("projectiles", projectiles);
+            // console.log("projectiles", projectiles);
             for (const projectile in object[enemy][projectiles]) {
-              console.log("projectile", projectile);
+              // console.log("projectile", projectile);
               for (const variable in object[enemy][projectiles][projectile]) {
-                console.log("variable", variable);
-                console.log(
-                  `object[enemy][projectiles][projectile]["x"]`,
-                  object[enemy][projectiles][projectile]["x"]
-                );
+                // console.log("variable", variable);
+                // console.log(
+                //   `object[enemy][projectiles][projectile]["x"]`,
+                //   object[enemy][projectiles][projectile]["x"]
+                // );
                 if (
                   tileX === object[enemy][projectiles][projectile]["x"] &&
                   tileY === object[enemy][projectiles][projectile]["y"]
