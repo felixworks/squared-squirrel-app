@@ -227,22 +227,33 @@ class Gameboard extends React.Component {
   };
 
   handleKeyDown = e => {
-    // a physical key was pressed down, not necessarily the down arrow key
-    const keyPressedDown = e.code;
+    // this function runs when a physical arrow key is pressed down
+    e.preventDefault();
+    console.log("e.code", e.code);
+    console.log("e", e.target.value);
+    let keyPressedDown = null;
+    if (e.code) {
+      keyPressedDown = e.code;
+    } else {
+      keyPressedDown = e.target.value;
+    }
+
     switch (keyPressedDown) {
       case "ArrowUp":
         if (this.state.player.y === 0) {
           return null;
         }
+
         this.setState({
           player: {
             ...this.state.player,
             y: this.state.player.y - 1
           }
         });
+
         this.updateProjectileMovement();
-    }
-    switch (keyPressedDown) {
+        break;
+
       case "ArrowDown":
         if (this.state.player.y === 9) {
           return null;
@@ -254,9 +265,8 @@ class Gameboard extends React.Component {
           }
         });
         this.updateProjectileMovement();
-    }
+        break;
 
-    switch (keyPressedDown) {
       case "ArrowRight":
         if (this.state.player.x === 9) {
           return null;
@@ -268,9 +278,8 @@ class Gameboard extends React.Component {
           }
         });
         this.updateProjectileMovement();
-    }
+        break;
 
-    switch (keyPressedDown) {
       case "ArrowLeft":
         if (this.state.player.x === 0) {
           return null;
@@ -282,7 +291,77 @@ class Gameboard extends React.Component {
           }
         });
         this.updateProjectileMovement();
+        break;
     }
+  };
+
+  handleArrowButtonClick = e => {
+    // this function runs when either a physical arrow key is pressed down, or one of the <button>'s intended for touchscreens is clicked
+    e.preventDefault();
+    this.handleKeyDown(e.target.value);
+    //   console.log("e.target.value1", e.target.value);
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    //   let buttonClicked = e.target.value;
+
+    //   switch (buttonClicked) {
+    //     case "ArrowUp":
+    //       console.log("buttonClicked inside ArrowUp", buttonClicked);
+    //       if (this.state.player.y === 0) {
+    //         return null;
+    //       }
+    //       console.log("before setState has run", this.state.player);
+    //       this.setState({
+    //         player: {
+    //           ...this.state.player,
+    //           y: this.state.player.y - 1
+    //         }
+    //       });
+
+    //       this.updateProjectileMovement();
+    //       console.log("after setState has run", this.state.player);
+    //       break;
+
+    //     case "ArrowDown":
+    //       if (this.state.player.y === 9) {
+    //         return null;
+    //       }
+    //       this.setState({
+    //         player: {
+    //           ...this.state.player,
+    //           y: this.state.player.y + 1
+    //         }
+    //       });
+    //       this.updateProjectileMovement();
+    //       break;
+
+    //     case "ArrowRight":
+    //       if (this.state.player.x === 9) {
+    //         return null;
+    //       }
+    //       this.setState({
+    //         player: {
+    //           ...this.state.player,
+    //           x: this.state.player.x + 1
+    //         }
+    //       });
+    //       this.updateProjectileMovement();
+    //       break;
+
+    //     case "ArrowLeft":
+    //       console.log("buttonClicked inside ArrowLeft", buttonClicked);
+    //       if (this.state.player.x === 0) {
+    //         return null;
+    //       }
+    //       this.setState({
+    //         player: {
+    //           ...this.state.player,
+    //           x: this.state.player.x - 1
+    //         }
+    //       });
+    //       this.updateProjectileMovement();
+    //       break;
+    //   }
   };
 
   gameStateCondition = () => {
@@ -300,13 +379,18 @@ class Gameboard extends React.Component {
 
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("click", e => {
+      if (e.target.value.includes("Arrow")) {
+        this.handleKeyDown(e);
+      }
+    });
     // checks for win state every 0.25 seconds
-    this.winChecker = setInterval(() => this.gameStateCondition(), 250);
+    this.gameStateChecker = setInterval(() => this.gameStateCondition(), 250);
   }
 
   componentWillUnmount() {
     window.removeEventListener("keydown", this.handleKeyDown);
-    clearInterval(this.winChecker);
+    clearInterval(this.gameStateChecker);
   }
 
   // randomNumberGenerator = () => {
@@ -329,27 +413,27 @@ class Gameboard extends React.Component {
 
   //checks whether a tile should render a Projectile
   renderProjectiles = (tileX, tileY) => {
-    let hasProjectile = false;
-    const initialList = this.state;
+    // let hasProjectile = false;
+    // const initialList = this.state;
 
-    const projectileListGrabber = object => {
-      Object.keys(object).forEach(enemy => {
-        if (enemy.includes("enemy")) {
-          Object.keys(object[enemy]).forEach(projectiles => {
-            if (projectiles.includes("projectiles")) {
-              Object.keys(object[enemy][projectiles]).forEach(projectile => {
-                if (
-                  object[enemy][projectiles][projectile]["x"] === tileX &&
-                  object[enemy][projectiles][projectile]["y"] === tileY
-                ) {
-                  hasProjectile = true;
-                }
-              });
-            }
-          });
-        }
-      });
-    };
+    // const projectileListGrabber = object => {
+    //   Object.keys(object).forEach(enemy => {
+    //     if (enemy.includes("enemy")) {
+    //       Object.keys(object[enemy]).forEach(projectiles => {
+    //         if (projectiles.includes("projectiles")) {
+    //           Object.keys(object[enemy][projectiles]).forEach(projectile => {
+    //             if (
+    //               object[enemy][projectiles][projectile]["x"] === tileX &&
+    //               object[enemy][projectiles][projectile]["y"] === tileY
+    //             ) {
+    //               hasProjectile = true;
+    //             }
+    //           });
+    //         }
+    //       });
+    //     }
+    //   });
+    // };
 
     let hasProjectile2 = false;
     const initialList2 = this.state;
@@ -422,11 +506,39 @@ class Gameboard extends React.Component {
     return gameTileArray;
   };
 
+  // touchClickHandler = () => {
+  //   if ("ontouchstart" in document.documentElement === true)
+  //     return "touchstart";
+  //   else return "click";
+  // };
+
   render() {
     return (
-      <section className="grid-container">
-        {this.generateGameTileArray()}
-      </section>
+      <>
+        <section className="grid-container">
+          {this.generateGameTileArray()}
+        </section>
+        <section className="touch-controls-container">
+          <form>
+            <button id="button-up" className="button-up" value="ArrowUp">
+              Up
+            </button>
+            <button id="button-down" className="button-down" value="ArrowDown">
+              Down
+            </button>
+            <button id="button-left" className="button-left" value="ArrowLeft">
+              Left
+            </button>
+            <button
+              id="button-right"
+              className="button-right"
+              value="ArrowRight"
+            >
+              Right
+            </button>
+          </form>
+        </section>
+      </>
     );
   }
 }
