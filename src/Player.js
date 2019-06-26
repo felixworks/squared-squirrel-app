@@ -1,7 +1,14 @@
 import React from "react";
+import squirrelImage from "./images/185673.svg";
 
 function Player(props) {
-  return <div className="player">Player</div>;
+  return (
+    <img
+      className="player-squirrel-image"
+      src={squirrelImage}
+      alt="Line drawing of squirrel"
+    />
+  );
 }
 
 export default Player;

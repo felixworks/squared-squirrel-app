@@ -226,8 +226,8 @@ class Gameboard extends React.Component {
     });
   };
 
+  // this function runs when a physical arrow key is pressed down or when an arrow <button> is clicked (for mobile)
   handleKeyDown = e => {
-    // this function runs when a physical arrow key is pressed down
     e.preventDefault();
     console.log("e.code", e.code);
     console.log("e", e.target.value);
@@ -299,69 +299,6 @@ class Gameboard extends React.Component {
     // this function runs when either a physical arrow key is pressed down, or one of the <button>'s intended for touchscreens is clicked
     e.preventDefault();
     this.handleKeyDown(e.target.value);
-    //   console.log("e.target.value1", e.target.value);
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    //   let buttonClicked = e.target.value;
-
-    //   switch (buttonClicked) {
-    //     case "ArrowUp":
-    //       console.log("buttonClicked inside ArrowUp", buttonClicked);
-    //       if (this.state.player.y === 0) {
-    //         return null;
-    //       }
-    //       console.log("before setState has run", this.state.player);
-    //       this.setState({
-    //         player: {
-    //           ...this.state.player,
-    //           y: this.state.player.y - 1
-    //         }
-    //       });
-
-    //       this.updateProjectileMovement();
-    //       console.log("after setState has run", this.state.player);
-    //       break;
-
-    //     case "ArrowDown":
-    //       if (this.state.player.y === 9) {
-    //         return null;
-    //       }
-    //       this.setState({
-    //         player: {
-    //           ...this.state.player,
-    //           y: this.state.player.y + 1
-    //         }
-    //       });
-    //       this.updateProjectileMovement();
-    //       break;
-
-    //     case "ArrowRight":
-    //       if (this.state.player.x === 9) {
-    //         return null;
-    //       }
-    //       this.setState({
-    //         player: {
-    //           ...this.state.player,
-    //           x: this.state.player.x + 1
-    //         }
-    //       });
-    //       this.updateProjectileMovement();
-    //       break;
-
-    //     case "ArrowLeft":
-    //       console.log("buttonClicked inside ArrowLeft", buttonClicked);
-    //       if (this.state.player.x === 0) {
-    //         return null;
-    //       }
-    //       this.setState({
-    //         player: {
-    //           ...this.state.player,
-    //           x: this.state.player.x - 1
-    //         }
-    //       });
-    //       this.updateProjectileMovement();
-    //       break;
-    //   }
   };
 
   gameStateCondition = () => {
@@ -378,9 +315,12 @@ class Gameboard extends React.Component {
   };
 
   componentDidMount() {
+    // listens for physical arrow key presses
     window.addEventListener("keydown", this.handleKeyDown);
+
+    // listens for button "arrow key" presses (mobile)
     document.addEventListener("click", e => {
-      if (e.target.value.includes("Arrow")) {
+      if (e.target.value) {
         this.handleKeyDown(e);
       }
     });
@@ -392,24 +332,6 @@ class Gameboard extends React.Component {
     window.removeEventListener("keydown", this.handleKeyDown);
     clearInterval(this.gameStateChecker);
   }
-
-  // randomNumberGenerator = () => {
-  //   return Math.floor(Math.random() * 10);
-  // };
-
-  // enemyGeneration = () => {
-  //   const amountOfEnemies = 6;
-  //   let randomNumbers = [];
-  //   while (randomNumbers.length < amountOfEnemies) {
-  //     const randomNumber = Math.floor(Math.random() * 10);
-  //     randomNumbers.push(randomNumber);
-  //   }
-  //   this.setState({
-  //     enemy1: { x: randomNumbers[0], y: randomNumbers[1] },
-  //     enemy2: { x: randomNumbers[2], y: randomNumbers[3] },
-  //     enemy3: { x: randomNumbers[4], y: randomNumbers[5] }
-  //   });
-  // };
 
   //checks whether a tile should render a Projectile
   renderProjectiles = (tileX, tileY) => {
@@ -485,7 +407,7 @@ class Gameboard extends React.Component {
             ...this.state,
             isPlayerAlive: false
           });
-          // added this line to resolve an infinite loop caused by setting state in render()
+          // added this line to resolve an infinite loop caused by setting state in render(), although there may still be issues
           this.gameStateCondition();
         }
 
@@ -505,12 +427,6 @@ class Gameboard extends React.Component {
     }
     return gameTileArray;
   };
-
-  // touchClickHandler = () => {
-  //   if ("ontouchstart" in document.documentElement === true)
-  //     return "touchstart";
-  //   else return "click";
-  // };
 
   render() {
     return (
@@ -538,6 +454,7 @@ class Gameboard extends React.Component {
             </button>
           </form>
         </section>
+        <section>Hint: the eagles do not give up.</section>
       </>
     );
   }
