@@ -17,10 +17,15 @@ class Header extends React.Component {
     return (
       <header>
         <nav>
-          <NavLink to="/">
+          <NavLink className="link" to="/">
             <h1>Squared Squirrel</h1>
           </NavLink>
-          <button onClick={this.togglePopup}>Register/Login</button>
+          <button
+            className="registration-login-button"
+            onClick={this.togglePopup}
+          >
+            Register/Login
+          </button>
           {this.state.showPopup ? (
             <Popup closePopup={this.togglePopup} />
           ) : null}

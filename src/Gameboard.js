@@ -430,32 +430,9 @@ class Gameboard extends React.Component {
 
   render() {
     return (
-      <>
-        <section className="grid-container">
-          {this.generateGameTileArray()}
-        </section>
-        <section className="touch-controls-container">
-          <form>
-            <button id="button-up" className="button-up" value="ArrowUp">
-              Up
-            </button>
-            <button id="button-down" className="button-down" value="ArrowDown">
-              Down
-            </button>
-            <button id="button-left" className="button-left" value="ArrowLeft">
-              Left
-            </button>
-            <button
-              id="button-right"
-              className="button-right"
-              value="ArrowRight"
-            >
-              Right
-            </button>
-          </form>
-        </section>
-        <section>Hint: the eagles do not give up.</section>
-      </>
+      <section className="grid-container">
+        {this.generateGameTileArray()}
+      </section>
     );
   }
 }

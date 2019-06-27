@@ -9,17 +9,18 @@ import { Route, Switch, BrowserRouter } from "react-router-dom";
 class App extends React.Component {
   render() {
     return (
-      <main className="App">
-        <BrowserRouter>
-          <Header />
+      <BrowserRouter>
+        <Header />
+        <main className="App">
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route path="/game" component={Game} />
             <Route path="/winState" component={WinStatePage} />
             <Route path="/lossState" component={LossStatePage} />
           </Switch>
-        </BrowserRouter>
-      </main>
+        </main>
+        <footer>Copyright © 2019 - Felix Meyer</footer>
+      </BrowserRouter>
     );
   }
 }
