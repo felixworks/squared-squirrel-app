@@ -13,6 +13,7 @@ class Gameboard extends React.Component {
       x: 9,
       y: 9
     },
+
     enemy1: {
       x: 1,
       y: 3,
@@ -335,59 +336,57 @@ class Gameboard extends React.Component {
 
   //checks whether a tile should render a Projectile
   renderProjectiles = (tileX, tileY) => {
-    // let hasProjectile = false;
-    // const initialList = this.state;
+    let hasProjectile = false;
+    const initialList = this.state;
 
-    // const projectileListGrabber = object => {
-    //   Object.keys(object).forEach(enemy => {
-    //     if (enemy.includes("enemy")) {
-    //       Object.keys(object[enemy]).forEach(projectiles => {
-    //         if (projectiles.includes("projectiles")) {
-    //           Object.keys(object[enemy][projectiles]).forEach(projectile => {
-    //             if (
-    //               object[enemy][projectiles][projectile]["x"] === tileX &&
-    //               object[enemy][projectiles][projectile]["y"] === tileY
-    //             ) {
-    //               hasProjectile = true;
-    //             }
-    //           });
-    //         }
-    //       });
-    //     }
-    //   });
-    // };
-
-    let hasProjectile2 = false;
-    const initialList2 = this.state;
-
-    const projectileListGrabber2 = object => {
-      for (const enemy in object) {
+    const projectileListGrabber = object => {
+      Object.keys(object).forEach(enemy => {
         if (enemy.includes("enemy")) {
-          for (const projectiles in object[enemy]) {
-            for (const projectile in object[enemy][projectiles]) {
-              for (const variable in object[enemy][projectiles][projectile]) {
+          Object.keys(object[enemy]).forEach(projectiles => {
+            if (projectiles.includes("projectiles")) {
+              Object.keys(object[enemy][projectiles]).forEach(projectile => {
                 if (
-                  tileX === object[enemy][projectiles][projectile]["x"] &&
-                  tileY === object[enemy][projectiles][projectile]["y"]
+                  object[enemy][projectiles][projectile]["x"] === tileX &&
+                  object[enemy][projectiles][projectile]["y"] === tileY
                 ) {
-                  hasProjectile2 = true;
+                  hasProjectile = true;
                 }
-              }
+              });
             }
-          }
+          });
         }
-      }
+      });
     };
-    projectileListGrabber2(initialList2);
-    return hasProjectile2;
+
+    // let hasProjectile2 = false;
+    // const initialList2 = this.state;
+
+    // const projectileListGrabber2 = object => {
+    //   for (const enemy in object) {
+    //     if (enemy.includes("enemy")) {
+    //       for (const projectiles in object[enemy]) {
+    //         for (const projectile in object[enemy][projectiles]) {
+    //           for (const variable in object[enemy][projectiles][projectile]) {
+    //             if (
+    //               tileX === object[enemy][projectiles][projectile]["x"] &&
+    //               tileY === object[enemy][projectiles][projectile]["y"]
+    //             ) {
+    //               hasProjectile2 = true;
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // };
+    projectileListGrabber(initialList);
+    return hasProjectile;
   };
 
-  // if performance issues arise, refactor this loop
   generateGameTileArray = () => {
     let gameTileArray = [];
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 10; x++) {
-        // checks to see whether the player location in state matches the current tile being generated
         const hasPlayer =
           x === this.state.player.x && y === this.state.player.y;
 
