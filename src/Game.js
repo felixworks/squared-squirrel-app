@@ -1,10 +1,22 @@
 import React from "react";
 import Gameboard from "./Gameboard";
+import UserStatus from "./UserStatus";
 
 class Game extends React.Component {
+  state = {
+    loggedIn: false,
+    user: null
+  };
+
+  setUser = user => {
+    console.log("user in setUser", user);
+    this.setState({ loggedIn: !this.state.loggedIn, user: user });
+  };
+
   render() {
     return (
       <>
+        <UserStatus userStatus={this.state} setUser={this.setUser} />
         <Gameboard />
         <section className="touch-controls-container">
           <form>
