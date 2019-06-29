@@ -1,5 +1,5 @@
 import React from "react";
-import AuthApiService from "./services/auth-api-service";
+import apiService from "./services/api-service";
 
 class Popup extends React.Component {
   state = {
@@ -13,12 +13,9 @@ class Popup extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    AuthApiService.postUser({ username: this.state.username })
-      .then(user => {
-        this.setState({
-          username: ""
-        });
-      })
+    apiService
+      .postUser(this.state.username)
+      .then(user => this.props.closePopup())
       .catch(res => {
         this.setState({ error: res.error });
       });
@@ -29,12 +26,13 @@ class Popup extends React.Component {
     return (
       <div className="authentication-popup-background">
         <form className="authentication-popup" onSubmit={this.handleSubmit}>
-          <div role="alert">{error && <p className="red">{error}</p>}</div>
-          <legend>Register/Login</legend>
+          <div role="alert">
+            {this.state.error && <p className="red">{error}</p>}
+          </div>
+          <legend>Login</legend>
           <label htmlFor="username-input">Username</label>
           <input
             type="text"
-            placeholder="Username"
             id="username-input"
             value={this.state.username}
             onChange={this.handleUsernameChange}

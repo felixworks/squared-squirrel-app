@@ -357,28 +357,6 @@ class Gameboard extends React.Component {
         }
       });
     };
-
-    // let hasProjectile2 = false;
-    // const initialList2 = this.state;
-
-    // const projectileListGrabber2 = object => {
-    //   for (const enemy in object) {
-    //     if (enemy.includes("enemy")) {
-    //       for (const projectiles in object[enemy]) {
-    //         for (const projectile in object[enemy][projectiles]) {
-    //           for (const variable in object[enemy][projectiles][projectile]) {
-    //             if (
-    //               tileX === object[enemy][projectiles][projectile]["x"] &&
-    //               tileY === object[enemy][projectiles][projectile]["y"]
-    //             ) {
-    //               hasProjectile2 = true;
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // };
     projectileListGrabber(initialList);
     return hasProjectile;
   };
