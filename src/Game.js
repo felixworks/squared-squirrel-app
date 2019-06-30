@@ -39,6 +39,7 @@ class Game extends React.Component {
   };
 
   componentDidMount() {
+    // access previous state from session storage, and update local values as needed
     let stateFromSessionStorage = null;
     if (sessionStorage.getItem("userStatus")) {
       stateFromSessionStorage = JSON.parse(
@@ -47,8 +48,6 @@ class Game extends React.Component {
       console.log("stateFromSessionStorage", stateFromSessionStorage);
       const updated_games_played =
         stateFromSessionStorage.userStatistics.games_played + 1;
-      const updated_games_won =
-        stateFromSessionStorage.userStatistics.games_won;
       if (stateFromSessionStorage.wonLastGame) {
         stateFromSessionStorage.userStatistics.games_won += 1;
       }

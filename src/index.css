@@ -12,6 +12,7 @@ body {
 }
 
 main {
+  height: 100vh;
   background-color: #3c3c3c;
   display: flex;
   flex-direction: column;
@@ -37,17 +38,20 @@ nav {
 }
 
 .registration-login-button {
-  position: static;
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
 }
 
 section.game-introduction {
   background-color: #9afe00;
   padding: 10px;
+  height: 100%;
 }
 
 .armored-squirrel-image {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 60%;
+  max-height: 60%;
 }
 
 .authentication-popup {
@@ -81,6 +85,15 @@ form {
 section {
   background-color: #ff6e5b;
   border: 3px solid black;
+}
+
+.user-statistics-container {
+  padding: 0px 10px;
+}
+.user-statistics-list {
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
 }
 
 .grid-container {
@@ -123,6 +136,9 @@ section {
 .button-up {
   display: block;
   margin: 0 auto;
+}
+
+footer {
 }
 
 @media only screen and (min-device-width: 600px) {

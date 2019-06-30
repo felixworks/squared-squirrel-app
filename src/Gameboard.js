@@ -229,10 +229,26 @@ class Gameboard extends React.Component {
   };
 
   // this function runs when a physical arrow key is pressed down or when an arrow <button> is clicked (for mobile)
-  handleKeyDown = e => {
+  handleKeyDown = (e, mobileClick) => {
+    if (mobileClick) {
+      e.preventDefault();
+    }
+
+    // prevent the window from scrolling when arrow keys are pressed, but ignore other key presses (setting e.preventDefault() on all keys breaks the login form)
+    switch (e.code) {
+      case "ArrowUp":
+      case "ArrowDown":
+      case "ArrowLeft":
+      case "ArrowRight":
+        e.preventDefault();
+        break;
+      default:
+        break;
+    }
     console.log("e.code", e.code);
     console.log("e", e.target.value);
     let keyPressedDown = null;
+    // decide between using physical arrow keys or arrow <button>'s
     if (e.code) {
       keyPressedDown = e.code;
     } else {
@@ -299,7 +315,8 @@ class Gameboard extends React.Component {
   handleArrowButtonClick = e => {
     // this function runs when one of the <button>'s intended for touchscreens is clicked
     e.preventDefault();
-    this.handleKeyDown(e.target.value);
+    const mobileClick = true;
+    this.handleKeyDown(e.target.value, mobileClick);
   };
 
   gameStateCondition = () => {
@@ -350,6 +367,7 @@ class Gameboard extends React.Component {
     // listens for button "arrow key" presses (mobile)
     document.addEventListener("click", e => {
       if (e.target.value) {
+        e.preventDefault();
         this.handleKeyDown(e);
       }
     });

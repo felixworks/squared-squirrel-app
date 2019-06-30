@@ -16,7 +16,7 @@ class UserStatus extends React.Component {
   render() {
     console.log("this.props.userStatus", this.props.userStatus);
     return (
-      <section className="user-status">
+      <div className="user-status">
         {!this.props.userStatus.loggedIn ? (
           <button
             className="registration-login-button"
@@ -33,7 +33,7 @@ class UserStatus extends React.Component {
             setUserStatistics={this.props.setUserStatistics}
           />
         ) : null}
-      </section>
+      </div>
     );
   }
 }
