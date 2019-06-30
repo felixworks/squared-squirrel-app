@@ -2,6 +2,7 @@ import React from "react";
 import Gameboard from "./Gameboard";
 import UserStatus from "./UserStatus";
 import UserStatistics from "./UserStatistics";
+import apiService from "./services/api-service";
 
 class Game extends React.Component {
   state = {
@@ -20,6 +21,26 @@ class Game extends React.Component {
     this.setState({ userStatistics: userStatistics });
   };
 
+  patchUserStatistics = (
+    incrementGamesPlayed,
+    incrementGamesWon,
+    lowestTimeWin
+  ) => {
+    console.log(
+      "this.state.userStatistics in patchUserStatistics",
+      this.state.userStatistics
+    );
+    const changesToUserStatistics = {
+      id: this.state.user.userInfo.id,
+      incrementGamesPlayed,
+      incrementGamesWon,
+      lowestTimeWin
+    };
+    if (this.state.loggedIn) {
+      apiService.updateUserStatistics(changesToUserStatistics);
+    }
+  };
+
   render() {
     return (
       <>
@@ -35,7 +56,7 @@ class Game extends React.Component {
             userStatistics={this.userStatistics}
           />
         )}
-        <Gameboard />
+        <Gameboard patchUserStatistics={this.patchUserStatistics} />
         <section className="touch-controls-container">
           <form>
             <button id="button-up" className="button-up" value="ArrowUp">

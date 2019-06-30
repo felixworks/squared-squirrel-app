@@ -311,6 +311,9 @@ class Gameboard extends React.Component {
     }
 
     if (!this.state.isPlayerAlive) {
+      // patchUserStatistics = (incrementGamesPlayed, incrementGamesWon, lowestTimeWin)
+      // third argument is always null, because lowestTimeWin has not been setup yet
+      this.props.patchUserStatistics(true, false, null);
       this.props.history.push("/lossState");
     }
   };

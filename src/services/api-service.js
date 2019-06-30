@@ -21,6 +21,16 @@ const apiService = {
         }
       }
     ).then(res => (!res.ok ? e => Promise.reject(e) : res.json()));
+  },
+
+  updateUserStatistics(userStatistics) {
+    return fetch(`${config.API_BASE_URL}/users/single`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({ userStatistics })
+    }).then(res => (!res.ok ? e => Promise.reject(e) : res.json()));
   }
 };
 
