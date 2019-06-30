@@ -26,17 +26,14 @@ class Game extends React.Component {
     incrementGamesWon,
     lowestTimeWin
   ) => {
-    console.log(
-      "this.state.userStatistics in patchUserStatistics",
-      this.state.userStatistics
-    );
-    const changesToUserStatistics = {
-      id: this.state.user.userInfo.id,
-      incrementGamesPlayed,
-      incrementGamesWon,
-      lowestTimeWin
-    };
     if (this.state.loggedIn) {
+      const changesToUserStatistics = {
+        id: this.state.user.userInfo.id,
+        incrementGamesPlayed,
+        incrementGamesWon,
+        lowestTimeWin
+      };
+      console.log("changesToUserStatistics", changesToUserStatistics);
       apiService.updateUserStatistics(changesToUserStatistics);
     }
   };

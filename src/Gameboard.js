@@ -307,6 +307,7 @@ class Gameboard extends React.Component {
       this.state.player.x === winningCoordinates[0] &&
       this.state.player.y === winningCoordinates[1]
     ) {
+      this.props.patchUserStatistics(true, true, null);
       this.props.history.push("/winState");
     }
 
