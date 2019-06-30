@@ -307,14 +307,38 @@ class Gameboard extends React.Component {
       this.state.player.x === winningCoordinates[0] &&
       this.state.player.y === winningCoordinates[1]
     ) {
-      this.props.patchUserStatistics(true, true, null);
+      if (this.props.userStatus.loggedIn) {
+        // patchUserStatistics = (incrementGamesPlayed, incrementGamesWon, lowestTimeWin)
+        // third argument is always null, because lowestTimeWin has not been setup yet
+        this.props.patchUserStatistics(true, true, null);
+        this.props.patchUserStatistics(true, false, null);
+        console.log("this.props.userStatus", this.props.userStatus);
+        sessionStorage.clear();
+        sessionStorage.setItem(
+          "userStatus",
+          JSON.stringify({
+            ...this.props.userStatus,
+            wonLastGame: true
+          })
+        );
+      }
+
       this.props.history.push("/winState");
     }
 
     if (!this.state.isPlayerAlive) {
-      // patchUserStatistics = (incrementGamesPlayed, incrementGamesWon, lowestTimeWin)
-      // third argument is always null, because lowestTimeWin has not been setup yet
-      this.props.patchUserStatistics(true, false, null);
+      if (this.props.userStatus.loggedIn) {
+        this.props.patchUserStatistics(true, false, null);
+        console.log("this.props.userStatus", this.props.userStatus);
+        sessionStorage.clear();
+        sessionStorage.setItem(
+          "userStatus",
+          JSON.stringify({
+            ...this.props.userStatus,
+            wonLastGame: false
+          })
+        );
+      }
       this.props.history.push("/lossState");
     }
   };

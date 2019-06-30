@@ -38,6 +38,31 @@ class Game extends React.Component {
     }
   };
 
+  componentDidMount() {
+    let stateFromSessionStorage = null;
+    if (sessionStorage.getItem("userStatus")) {
+      stateFromSessionStorage = JSON.parse(
+        sessionStorage.getItem("userStatus")
+      );
+      console.log("stateFromSessionStorage", stateFromSessionStorage);
+      const updated_games_played =
+        stateFromSessionStorage.userStatistics.games_played + 1;
+      const updated_games_won =
+        stateFromSessionStorage.userStatistics.games_won;
+      if (stateFromSessionStorage.wonLastGame) {
+        stateFromSessionStorage.userStatistics.games_won += 1;
+      }
+      this.setState({
+        ...stateFromSessionStorage,
+        userStatistics: {
+          ...stateFromSessionStorage.userStatistics,
+          games_played: updated_games_played,
+          games_won: stateFromSessionStorage.userStatistics.games_won
+        }
+      });
+    }
+  }
+
   render() {
     return (
       <>
@@ -53,7 +78,10 @@ class Game extends React.Component {
             userStatistics={this.userStatistics}
           />
         )}
-        <Gameboard patchUserStatistics={this.patchUserStatistics} />
+        <Gameboard
+          patchUserStatistics={this.patchUserStatistics}
+          userStatus={this.state}
+        />
         <section className="touch-controls-container">
           <form>
             <button id="button-up" className="button-up" value="ArrowUp">
