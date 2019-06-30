@@ -9,6 +9,7 @@ let winningCoordinates = [0, 0];
 class Gameboard extends React.Component {
   state = {
     isPlayerAlive: true,
+
     player: {
       x: 9,
       y: 9
@@ -229,7 +230,6 @@ class Gameboard extends React.Component {
 
   // this function runs when a physical arrow key is pressed down or when an arrow <button> is clicked (for mobile)
   handleKeyDown = e => {
-    e.preventDefault();
     console.log("e.code", e.code);
     console.log("e", e.target.value);
     let keyPressedDown = null;
@@ -297,7 +297,7 @@ class Gameboard extends React.Component {
   };
 
   handleArrowButtonClick = e => {
-    // this function runs when either a physical arrow key is pressed down, or one of the <button>'s intended for touchscreens is clicked
+    // this function runs when one of the <button>'s intended for touchscreens is clicked
     e.preventDefault();
     this.handleKeyDown(e.target.value);
   };
@@ -317,7 +317,7 @@ class Gameboard extends React.Component {
 
   componentDidMount() {
     // listens for physical arrow key presses
-    window.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keydown", this.handleKeyDown);
 
     // listens for button "arrow key" presses (mobile)
     document.addEventListener("click", e => {

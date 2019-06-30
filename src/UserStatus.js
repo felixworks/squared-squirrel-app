@@ -24,15 +24,14 @@ class UserStatus extends React.Component {
           >
             Register/Login
           </button>
-        ) : (
-          <p>
-            Currently logged in username:{" "}
-            {this.props.userStatus.user.userInfo.username}
-          </p>
-        )}
+        ) : null}
 
         {this.state.showPopup ? (
-          <Popup closePopup={this.togglePopup} setUser={this.props.setUser} />
+          <Popup
+            closePopup={this.togglePopup}
+            setUser={this.props.setUser}
+            setUserStatistics={this.props.setUserStatistics}
+          />
         ) : null}
       </section>
     );

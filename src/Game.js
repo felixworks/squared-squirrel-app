@@ -1,22 +1,40 @@
 import React from "react";
 import Gameboard from "./Gameboard";
 import UserStatus from "./UserStatus";
+import UserStatistics from "./UserStatistics";
 
 class Game extends React.Component {
   state = {
     loggedIn: false,
-    user: null
+    user: null,
+    userStatistics: null
   };
 
   setUser = user => {
     console.log("user in setUser", user);
-    this.setState({ loggedIn: !this.state.loggedIn, user: user });
+    this.setState({ loggedIn: true, user: user });
+  };
+
+  setUserStatistics = userStatistics => {
+    console.log("userStatistics in setUserStatistics", userStatistics);
+    this.setState({ userStatistics: userStatistics });
   };
 
   render() {
     return (
       <>
-        <UserStatus userStatus={this.state} setUser={this.setUser} />
+        <UserStatus
+          userStatus={this.state}
+          setUser={this.setUser}
+          userStatistics={this.userStatistics}
+          setUserStatistics={this.setUserStatistics}
+        />
+        {this.state.userStatistics && (
+          <UserStatistics
+            userStatus={this.state}
+            userStatistics={this.userStatistics}
+          />
+        )}
         <Gameboard />
         <section className="touch-controls-container">
           <form>

@@ -17,7 +17,15 @@ class Popup extends React.Component {
       .postUser(this.state.username)
       .then(user => {
         this.props.setUser(user);
-        this.props.closePopup();
+        return user;
+      })
+      .then(user => {
+        console.log("user inside apiService.getUserStatistics() call", user);
+        apiService.getUserStatistics(user.userInfo.username).then(user => {
+          console.log("user inside apiService.getUserStatistics() call", user);
+          this.props.setUserStatistics(user);
+          this.props.closePopup();
+        });
       })
       .catch(res => {
         this.setState({ error: res.error });
