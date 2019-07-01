@@ -20,9 +20,8 @@ class Popup extends React.Component {
         return user;
       })
       .then(user => {
-        console.log("user inside apiService.getUserStatistics() call", user);
         apiService.getUserStatistics(user.userInfo.username).then(user => {
-          console.log("user inside apiService.getUserStatistics() call", user);
+          // sends user statistics to update state in <Game> component
           this.props.setUserStatistics(user);
           this.props.closePopup();
         });

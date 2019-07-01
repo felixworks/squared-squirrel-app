@@ -95,7 +95,7 @@ class Gameboard extends React.Component {
     }
   };
 
-  //checks whether a projectile is at the edge of the board and needs to be flipped
+  //checks whether a projectile (eagle) is at the edge of the board and needs to be flipped
   directionFlipper = (initialDirection, enemyName, projectileLetter) => {
     if (
       (this.state[enemyName].projectiles[projectileLetter].y === 0 &&
@@ -122,15 +122,17 @@ class Gameboard extends React.Component {
     }
   };
 
-  // helper function for next code block - handles projectile movement by making the appropriate changes in state
+  // helper function for next code block - handles projectile (eagle) movement by making the appropriate changes in state
   setProjectileState = (projectileLetter, direction, enemyName) => {
     let desiredState = {};
+    // if projectile is at the edge of the map, then flip its direction
     const flippedDirection = this.directionFlipper(
       direction,
       enemyName,
       projectileLetter
     );
-
+    // setProjectileState() operates inside of a loop that iterates through [enemyName] and [projectileLetter] variables to update each projectile's position
+    // the direction parameter comes from each projectile's current state
     switch (direction) {
       case "up":
         desiredState = {
@@ -198,7 +200,6 @@ class Gameboard extends React.Component {
         break;
     }
 
-    // console.log("desiredState", desiredState);
     this.setState(desiredState);
   };
 
@@ -245,8 +246,6 @@ class Gameboard extends React.Component {
       default:
         break;
     }
-    console.log("e.code", e.code);
-    console.log("e", e.target.value);
     let keyPressedDown = null;
     // decide between using physical arrow keys or arrow <button>'s
     if (e.code) {
@@ -312,8 +311,8 @@ class Gameboard extends React.Component {
     }
   };
 
+  // this function runs when one of the <button>'s intended for touchscreens is clicked
   handleArrowButtonClick = e => {
-    // this function runs when one of the <button>'s intended for touchscreens is clicked
     e.preventDefault();
     const mobileClick = true;
     this.handleKeyDown(e.target.value, mobileClick);
@@ -324,12 +323,11 @@ class Gameboard extends React.Component {
       this.state.player.x === winningCoordinates[0] &&
       this.state.player.y === winningCoordinates[1]
     ) {
+      // if user wins while logged in, update user statistics in database, and store state in session storage for the next game
       if (this.props.userStatus.loggedIn) {
         // patchUserStatistics = (incrementGamesPlayed, incrementGamesWon, lowestTimeWin)
         // third argument is always null, because lowestTimeWin has not been setup yet
         this.props.patchUserStatistics(true, true, null);
-        this.props.patchUserStatistics(true, false, null);
-        console.log("this.props.userStatus", this.props.userStatus);
         sessionStorage.clear();
         sessionStorage.setItem(
           "userStatus",
@@ -342,11 +340,10 @@ class Gameboard extends React.Component {
 
       this.props.history.push("/winState");
     }
-
     if (!this.state.isPlayerAlive) {
+      // if user loses while logged in, update user statistics in database, and store state in session storage for next game
       if (this.props.userStatus.loggedIn) {
         this.props.patchUserStatistics(true, false, null);
-        console.log("this.props.userStatus", this.props.userStatus);
         sessionStorage.clear();
         sessionStorage.setItem(
           "userStatus",
@@ -380,11 +377,10 @@ class Gameboard extends React.Component {
     clearInterval(this.gameStateChecker);
   }
 
-  //checks whether a tile should render a Projectile
+  //checks whether a tile should render a projectile, by comparing the coordinates of all projectiles to the tile's coordinates
   renderProjectiles = (tileX, tileY) => {
     let hasProjectile = false;
     const initialList = this.state;
-
     const projectileListGrabber = object => {
       Object.keys(object).forEach(enemy => {
         if (enemy.includes("enemy")) {
@@ -424,8 +420,8 @@ class Gameboard extends React.Component {
         const hasWinningTile =
           x === winningCoordinates[0] && y === winningCoordinates[1];
 
+        // death condition
         if ((hasPlayer && hasProjectile) || (hasPlayer && hasEnemy)) {
-          console.log("player has died");
           this.setState({
             ...this.state,
             isPlayerAlive: false

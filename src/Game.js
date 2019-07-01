@@ -12,12 +12,10 @@ class Game extends React.Component {
   };
 
   setUser = user => {
-    console.log("user in setUser", user);
     this.setState({ loggedIn: true, user: user });
   };
 
   setUserStatistics = userStatistics => {
-    console.log("userStatistics in setUserStatistics", userStatistics);
     this.setState({ userStatistics: userStatistics });
   };
 
@@ -33,7 +31,7 @@ class Game extends React.Component {
         incrementGamesWon,
         lowestTimeWin
       };
-      console.log("changesToUserStatistics", changesToUserStatistics);
+
       apiService.updateUserStatistics(changesToUserStatistics);
     }
   };
@@ -45,7 +43,7 @@ class Game extends React.Component {
       stateFromSessionStorage = JSON.parse(
         sessionStorage.getItem("userStatus")
       );
-      console.log("stateFromSessionStorage", stateFromSessionStorage);
+
       const updated_games_played =
         stateFromSessionStorage.userStatistics.games_played + 1;
       if (stateFromSessionStorage.wonLastGame) {

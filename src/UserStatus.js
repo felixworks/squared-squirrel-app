@@ -14,7 +14,6 @@ class UserStatus extends React.Component {
   };
 
   render() {
-    console.log("this.props.userStatus", this.props.userStatus);
     return (
       <div className="user-status">
         {!this.props.userStatus.loggedIn ? (
