@@ -22,6 +22,7 @@ class App extends React.Component {
         <footer>
           Copyright © 2019 -{" "}
           <a
+            className="link"
             href="https://felixworks.github.io/portfolio/"
             target="_blank"
             rel="noopener noreferrer"
