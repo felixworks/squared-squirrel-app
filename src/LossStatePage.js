@@ -6,7 +6,9 @@ class LossStatePage extends React.Component {
     return (
       <section className="lossstate-box">
         <h2>You've lost!</h2>
-        <NavLink to="/game">Play again?</NavLink>
+        <NavLink className="link end-link" to="/game">
+          Play again?
+        </NavLink>
       </section>
     );
   }

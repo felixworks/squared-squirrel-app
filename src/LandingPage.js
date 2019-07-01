@@ -17,8 +17,10 @@ class LandingPage extends React.Component {
           src={armoredSquirrelImage}
           alt="Squirrel wearing armor"
         />
-        <NavLink to="/game">
-          <p>Start game!</p>
+        <NavLink className="link" to="/game">
+          <div className="start-link">
+            <p className="start-link">Start game!</p>
+          </div>
         </NavLink>
       </section>
     );

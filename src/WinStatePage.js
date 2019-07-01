@@ -6,7 +6,9 @@ class WinStatePage extends React.Component {
     return (
       <section className="winstate-box">
         <h2>You've won!</h2>
-        <NavLink to="/game">Play again?</NavLink>
+        <NavLink className="link end-link" to="/game">
+          Play again?
+        </NavLink>
       </section>
     );
   }
