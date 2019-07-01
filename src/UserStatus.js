@@ -22,7 +22,7 @@ class UserStatus extends React.Component {
             className="registration-login-button"
             onClick={this.togglePopup}
           >
-            Register/Login
+            <b>Register/Login</b>
           </button>
         ) : null}
 

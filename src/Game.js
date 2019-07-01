@@ -103,8 +103,20 @@ class Game extends React.Component {
         </section>
         <section className="game-hints">
           <p>
-            <b>Hint:</b> Eagles may leave the map, but they do not give up.
+            <b>Goal: </b>You are the squirrel in the corner. Get to the purple
+            home tree while avoiding the towers and eagles!
           </p>
+          <p>
+            <b>Directions: </b>Move with your keyboard arrow keys or onscreen
+            buttons for mobile. For each step you take, the eagles will also
+            take a step (or a flap.)
+          </p>
+          {/* <p>
+            <b>Hint:</b> Eagles may leave the map, but they do not give up.
+            <br />
+            Eagles are not that smart, but if they see you moving into the
+            square they're about to leave, they'll wait and snatch you up.
+          </p> */}
         </section>
       </>
     );

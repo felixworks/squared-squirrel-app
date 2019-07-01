@@ -19,7 +19,16 @@ class App extends React.Component {
             <Route path="/lossState" component={LossStatePage} />
           </Switch>
         </main>
-        <footer>Copyright © 2019 - Felix Meyer</footer>
+        <footer>
+          Copyright © 2019 -{" "}
+          <a
+            href="https://felixworks.github.io/portfolio/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Felix Meyer
+          </a>
+        </footer>
       </BrowserRouter>
     );
   }
