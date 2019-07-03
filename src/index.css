@@ -9,11 +9,12 @@ body {
   text-align: center;
   line-height: 1.5;
   margin: 0;
+  /* background-color: #3c3c3c; */
 }
 
 main {
-  max-height: 100vh;
-  background-color: #3c3c3c;
+  /* height: 100vh; */
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -121,9 +122,12 @@ section.game-introduction {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-nav,
-footer {
+nav {
   background-color: #ff1e00;
+}
+
+footer {
+  margin-top: 20px;
 }
 
 section {
